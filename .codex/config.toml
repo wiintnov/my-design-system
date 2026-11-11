@@ -1,0 +1,10 @@
+# Codex 프로젝트 설정
+# 이 폴더를 Codex에서 '신뢰(trust)'해야 적용돼요. 처음 열 때 묻는 창에서 신뢰를 선택하세요.
+
+# 파일 수정은 이 폴더 안에서만, 위험한 명령은 실행 전에 물어봐요 (초보자 권장 조합)
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+# Figma 공식 원격 MCP 서버. 로그인: 터미널에서 `codex mcp login figma`
+[mcp_servers.figma]
+url = "https://mcp.figma.com/mcp"

@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node scripts/check-design.mjs --hook" },
+          { "type": "command", "command": "node scripts/sync-agents.mjs --quiet" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/*
+ * ─────────────────────────────────────────────────────────────
+ *  디자인 토큰 (Figma Variables → 코드)
+ *  - 이 블록이 색·모서리·그림자의 "단일 출처"예요.
+ *  - 값은 Figma hex 그대로 적어요. 직접 손으로 고치지 말고
+ *    figma-sync 스킬로 Figma에서 다시 가져와요.
+ *  - 아래 값은 시작용 예시예요. Figma를 연결하면 교체돼요.
+ *  - `static`: 아직 안 쓰는 토큰도 /playground에 보이도록 항상 출력해요.
+ * ─────────────────────────────────────────────────────────────
+ */
+@theme static {
+  /* Tailwind 기본 팔레트(zinc, blue…)는 끕니다. 토큰에 있는 색만 쓸 수 있어요. */
+  --color-*: initial;
+
+  /* color */
+  --color-primary: #3182f6;
+  --color-primary-pressed: #1b64da;
+  --color-on-primary: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f2f4f6;
+  --color-fg: #191f28;
+  --color-fg-subtle: #6b7684;
+  --color-border: #e5e8eb;
+  --color-danger: #f04452;
+  --color-transparent: transparent;
+
+  /* radius — 4px 그리드 */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+
+  /* font */
+  --font-sans: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+}
+
+/* 간격(spacing)은 Tailwind 기본값을 그대로 써요: p-1 = 4px, p-2 = 8px … (4px 그리드) */
+
+body {
+  background: var(--color-surface);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}
