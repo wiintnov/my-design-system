@@ -7,7 +7,8 @@ import { useLayoutEffect, useRef, type ReactNode } from "react";
  * Figma 프로토타입의 "Preserve scroll position"과 같아요.
  * 위치는 이 브라우저 탭에만 잠깐 기억해요 (sessionStorage).
  */
-const KEY = "friend-feedback:scroll";
+export const SCROLL_KEY = "friend-feedback:scroll";
+const KEY = SCROLL_KEY;
 
 export function ScrollArea({ className, children }: { className?: string; children: ReactNode }) {
   const ref = useRef<HTMLElement>(null);

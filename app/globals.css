@@ -41,6 +41,9 @@
   --radius-xl: 16px;
   --radius-pill: 9999px;
 
+  /* shadow — Figma "[모달] 선택"(1:1233) drop-shadow 0 0 2px 25% 검정 */
+  --shadow-dropdown: 0 0 2px rgba(0, 0, 0, 0.25);
+
   /* 글자 크기 — Figma는 행간 1.3, 자간 -2.5%(= tracking-tight) */
   --text-3xs: 10px;
   --text-3xs--line-height: 1.3;

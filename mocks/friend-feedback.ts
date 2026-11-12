@@ -6,6 +6,7 @@
  *   ?data=long       아주 긴 글 (긴 이름·장면 이름·질문·선택지, 입력칸에 긴 조언)
  *   ?data=empty      빈 목록 (장면 0개, 영상 0:00)
  *   ?data=many       많은 목록 (짧은 장면 8개 → 장면 이름이 겹치는지)
+ *   ?data=filled     기본 + 구간·코멘트·조언을 채운 모습 (제출 완료 화면 예시, Figma 캡처용)
  *
  * 이름은 모두 예시용이에요. 실존 인물과 관계없어요.
  */
@@ -32,10 +33,16 @@ export type FeedbackData = {
   playback: { chapterIndex: number; progress: number };
   impressions: Impression[];
   /** 입력칸에 미리 채워 둘 글 (경계 케이스 확인용) */
-  draft?: { bestComment?: string; worstComment?: string; advice?: string };
+  draft?: {
+    bestSection?: string;
+    bestComment?: string;
+    worstSection?: string;
+    worstComment?: string;
+    advice?: string;
+  };
 };
 
-export const FEEDBACK_CASES = ["default", "long", "empty", "many"] as const;
+export const FEEDBACK_CASES = ["default", "long", "empty", "many", "filled"] as const;
 export type FeedbackCase = (typeof FEEDBACK_CASES)[number];
 
 // ── 기본 (Figma 글자 그대로) ─────────────────────────────
@@ -94,14 +101,13 @@ const long: FeedbackData = {
         return q;
     }
   }),
+  // 코멘트·자유 조언은 100자 제한 (디자이너 결정) → 경계값인 딱 100자로 채워요
   draft: {
     bestComment:
-      "프로젝트 경험을 설명할 때 숫자로 근거를 대면서도 여유 있게 농담까지 섞어서, 듣는 사람이 편안하게 집중할 수 있었던 점이 정말 인상 깊었어요",
+      "프로젝트 경험을 설명할 때 숫자로 근거를 대면서도 여유 있게 농담까지 섞어서, 듣는 사람이 편안하게 집중할 수 있었던 점이 정말 인상 깊었어요. 캐시 미스 수치 설명도 좋았어요!!",
     worstComment: "트러블슈팅 부분에서 원인과 해결 순서가 섞여서 조금 헷갈렸어요. 원인 → 시도 → 결과 순서로 말하면 더 좋을 것 같아요",
     advice:
-      "전체적으로 정말 잘하셨어요! 처음에는 조금 긴장한 것 같았는데 프로젝트 경험을 이야기할 때부터 목소리에 힘이 생기고 표정도 훨씬 밝아졌어요.\n\n" +
-      "다만 질문을 끝까지 듣기 전에 답을 시작하는 순간이 두세 번 있었어요. 한 박자 쉬고 질문을 다시 정리한 다음 답하면 훨씬 차분해 보일 것 같아요.\n\n" +
-      "그리고 손을 자주 움직이는 습관이 있는데, 테이블 위에 가볍게 올려 두는 연습을 해 보면 좋겠어요. 기술 스택 설명은 깔끔했으니 자신감 가지세요. 다음 면접도 꼭 잘 될 거예요. 응원합니다! 화이팅 화이팅 화이팅!",
+      "전체적으로 정말 잘하셨어요! 처음엔 긴장한 것 같았지만 프로젝트 이야기부터 목소리에 힘이 생겼어요. 질문을 끝까지 듣고 한 박자 쉬고 답하면 더 차분해 보일 거예요. 늘 응원해요!",
   },
 };
 
@@ -132,7 +138,19 @@ const many: FeedbackData = {
   impressions: withName("지우", impressions),
 };
 
-export const feedbackData: Record<FeedbackCase, FeedbackData> = { default: base, long, empty, many };
+// ── 채운 모습 (제출 완료 화면 예시) ─────────────────────
+const filled: FeedbackData = {
+  ...base,
+  draft: {
+    bestSection: "표정",
+    bestComment: "프로젝트 경험을 말할 때 표정이 밝아서 자신감 있어 보였어요",
+    worstSection: "손 움직임",
+    worstComment: "트러블슈팅을 설명할 때 손을 자주 만져서 긴장한 게 느껴졌어요",
+    advice: "전체적으로 차분하게 잘하셨어요! 답하기 전에 한 박자 쉬면 더 여유 있어 보일 것 같아요. 응원해요!",
+  },
+};
+
+export const feedbackData: Record<FeedbackCase, FeedbackData> = { default: base, long, empty, many, filled };
 
 /** 주소의 ?data= 값으로 케이스를 골라요. 모르는 값이면 기본. */
 export function getFeedbackCase(value: string | string[] | undefined): FeedbackCase {

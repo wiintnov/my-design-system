@@ -103,4 +103,10 @@ export const screens: Screen[] = [
     href: "/prototype/friend-feedback/13",
     figma: "https://www.figma.com/design/lEcmDJcLQOI020XL6qJJVO/Hilit---maze?node-id=1-2468",
   },
+  {
+    flow: "지인 피드백",
+    step: 14,
+    title: "지인 피드백 - 제출 완료 (임시 초안 · Figma 없음)",
+    href: "/prototype/friend-feedback/14",
+  },
 ];
