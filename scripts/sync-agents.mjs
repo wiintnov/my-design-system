@@ -72,6 +72,7 @@ for (const name of dirs(CLAUDE_SKILLS)) {
 // 2) 서브에이전트
 const toml = (s) => `"""\n${s.replaceAll("\\", "\\\\").replaceAll('"""', '\\"\\"\\"')}\n"""`;
 function parse(md) {
+  md = md.replace(/\r\n/g, "\n"); // Windows 줄바꿈(CRLF)도 읽을 수 있게
   const m = md.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!m) return null;
   const fm = {};
