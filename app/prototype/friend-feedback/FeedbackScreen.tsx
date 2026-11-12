@@ -2,7 +2,9 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/Button";
-import { feedbackData, getFeedbackCase, type FeedbackData } from "@/mocks/friend-feedback";
+import { feedbackData, getFeedbackCase, type FeedbackCase, type FeedbackData } from "@/mocks/friend-feedback";
+import { AutoAdvance } from "./AutoAdvance";
+import { ScrollArea } from "./ScrollArea";
 
 /*
  * 지인 피드백 화면 공통 틀 (Figma: Hilit - maze › 지인 피드백 - 메인 1:41, 인상평가/1~ )
@@ -24,22 +26,32 @@ type Props = {
    * "항목key:선택지" = 선택지 칸, "항목key" = 접힌 카드
    */
   links?: Record<string, string>;
+  /** 화면이 열리고 잠시 뒤 자동으로 넘어갈 곳 (Figma "After delay") */
+  autoNext?: string;
 };
 
 /**
  * 주소 뒤 값(?data=)은 화면을 열 때만 알 수 있어서 Suspense로 감싸요.
  * (이 Next.js 버전은 미리 그릴 수 있는 부분은 미리 그려 두는데, 주소 값은 미리 알 수 없어요)
  */
-export function FeedbackScreen(props: Props) {
+export function FeedbackScreen({ searchParams, autoNext, ...rest }: Props) {
+  // 기다리는 동안에도 빈 화면 대신 기본 데이터로 "완성된 화면"을 먼저 보여 줘요.
+  // 기본 데이터면 그대로 이어져서 화면 사이에 공백이 없어요.
   return (
-    <Suspense fallback={<div className="min-h-dvh bg-surface-subtle" />}>
-      <FeedbackScreenContent {...props} />
+    <Suspense fallback={<ScreenBody dataCase="default" {...rest} />}>
+      <FeedbackScreenContent searchParams={searchParams} autoNext={autoNext} {...rest} />
     </Suspense>
   );
 }
 
-async function FeedbackScreenContent({ searchParams, open = "gaze", selected = {}, links = {} }: Props) {
+async function FeedbackScreenContent({ searchParams, ...rest }: Props) {
   const dataCase = getFeedbackCase((await searchParams).data);
+  return <ScreenBody dataCase={dataCase} {...rest} />;
+}
+
+type BodyProps = Omit<Props, "searchParams"> & { dataCase: FeedbackCase };
+
+function ScreenBody({ dataCase, open = "gaze", selected = {}, links = {}, autoNext }: BodyProps) {
   const data = feedbackData[dataCase];
   const { interviewee, video, impressions } = data;
   // 다음 화면으로 가도 같은 데이터 케이스를 유지해요
@@ -51,7 +63,7 @@ async function FeedbackScreenContent({ searchParams, open = "gaze", selected = {
         <StatusBar />
 
         {/* 스크롤 영역 */}
-        <main className="flex flex-1 flex-col gap-6 overflow-y-auto px-6 pt-6 pb-7">
+        <ScrollArea className="flex flex-1 flex-col gap-6 overflow-y-auto px-6 pt-6 pb-7">
           {/* 1. 영상 + 장면 고르기 */}
           <section className="flex flex-col gap-5">
             <h1 className="text-xl font-semibold tracking-tight">
@@ -86,7 +98,7 @@ async function FeedbackScreenContent({ searchParams, open = "gaze", selected = {
                     <span className="text-sm font-semibold whitespace-nowrap">{item.title}</span>
                     <span className="min-w-0 flex-1 text-xs text-fg-subtle">{item.question}</span>
                     {!isOpen && answer && (
-                      <span className="shrink-0 rounded-lg bg-accent-subtle px-3 py-1 text-xs font-semibold whitespace-nowrap text-accent">
+                      <span className="shrink-0 rounded-lg bg-accent-subtle px-3 py-1 text-xs font-medium whitespace-nowrap text-accent">
                         {answer}
                       </span>
                     )}
@@ -154,7 +166,7 @@ async function FeedbackScreenContent({ searchParams, open = "gaze", selected = {
               />
             </div>
           </section>
-        </main>
+        </ScrollArea>
 
         {/* 하단 고정: 제출 */}
         <footer className="flex flex-col gap-3 px-6 pb-7">
@@ -165,6 +177,7 @@ async function FeedbackScreenContent({ searchParams, open = "gaze", selected = {
         </footer>
 
         <HomeIndicator />
+        {autoNext && <AutoAdvance href={to(autoNext)!} />}
       </div>
     </div>
   );
