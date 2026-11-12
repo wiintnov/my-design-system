@@ -20,6 +20,7 @@ const results = [];
 const add = (level, where, msg) => results.push({ level, where, msg });
 
 function parse(text) {
+  text = text.replace(/\r\n/g, "\n"); // Windows 줄바꿈(CRLF)도 읽을 수 있게
   const m = text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!m) return null;
   const fm = {};

@@ -157,6 +157,9 @@ Next.js(App Router) + Tailwind CSS v4.
 | `dummy-data` | 스킬 | 화면에 넣을 더미데이터가 필요할 때 |
 | `ship` | 스킬 | 커밋·푸시·Vercel 배포할 때 |
 | `flow-check` | 스킬 | 배포 링크에서 유저플로우를 테스트하고 결과를 정리할 때 |
+| `handoff-check` | 스킬 | Figma 화면을 개발에 넘기기 전에 색·그리드·상태·연결을 점검할 때 |
+| `state-coverage` | 스킬 | 화면·버튼·입력칸의 빈·로딩·에러·disabled 같은 상태가 Figma와 코드에 다 있는지 볼 때 |
+| `copy-tone` | 스킬 | 화면 문구를 우리 말투 규칙(해요체·띄어쓰기·선택지 끝말 등)으로 점검하거나 새 문구를 쓸 때 |
 | `new-skill` | 스킬 | 반복되는 부탁을 새 스킬·서브에이전트로 만들 때 |
 | `my-template` | 스킬 | 이 레포를 사용자만의 템플릿으로 정리할 때 |
 | `figma-reviewer` | 서브에이전트 | 만든 화면을 Figma와 나란히 대조 검수할 때 (읽기 전용) |

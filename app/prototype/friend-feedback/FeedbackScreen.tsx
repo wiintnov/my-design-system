@@ -4,7 +4,10 @@ import { Suspense } from "react";
 import { Button } from "@/components/ui/Button";
 import { feedbackData, getFeedbackCase, type FeedbackCase, type FeedbackData } from "@/mocks/friend-feedback";
 import { AutoAdvance } from "./AutoAdvance";
+import { AdviceInput, CommentRow } from "./CommentInput";
+import { NavButton } from "./NavButton";
 import { ScrollArea } from "./ScrollArea";
+import { SectionSelect } from "./SectionSelect";
 
 /*
  * 지인 피드백 화면 공통 틀 (Figma: Hilit - maze › 지인 피드백 - 메인 1:41, 인상평가/1~ )
@@ -28,6 +31,8 @@ type Props = {
   links?: Record<string, string>;
   /** 화면이 열리고 잠시 뒤 자동으로 넘어갈 곳 (Figma "After delay") */
   autoNext?: string;
+  /** "피드백 제출"을 누르면 넘어갈 곳 (6개를 다 고른 화면에만) */
+  submitHref?: string;
 };
 
 /**
@@ -45,25 +50,31 @@ export function FeedbackScreen({ searchParams, autoNext, ...rest }: Props) {
 }
 
 async function FeedbackScreenContent({ searchParams, ...rest }: Props) {
-  const dataCase = getFeedbackCase((await searchParams).data);
-  return <ScreenBody dataCase={dataCase} {...rest} />;
+  const params = await searchParams;
+  const dataCase = getFeedbackCase(params.data);
+  // ?full=1 — 안쪽 스크롤 없이 화면 전체를 길게 (Figma 캡처용)
+  return <ScreenBody dataCase={dataCase} full={params.full === "1"} {...rest} />;
 }
 
-type BodyProps = Omit<Props, "searchParams"> & { dataCase: FeedbackCase };
+type BodyProps = Omit<Props, "searchParams"> & { dataCase: FeedbackCase; full?: boolean };
 
-function ScreenBody({ dataCase, open = "gaze", selected = {}, links = {}, autoNext }: BodyProps) {
+function ScreenBody({ dataCase, full, open = "gaze", selected = {}, links = {}, autoNext, submitHref }: BodyProps) {
   const data = feedbackData[dataCase];
   const { interviewee, video, impressions } = data;
+  const sectionNames = impressions.map((i) => i.title); // 구간 셀렉트: 시선 ~ 말투 톤
   // 다음 화면으로 가도 같은 데이터 케이스를 유지해요
   const to = (href?: string) => (href && dataCase !== "default" ? `${href}?data=${dataCase}` : href);
 
   return (
     <div className="flex min-h-dvh justify-center bg-surface-subtle">
-      <div className="relative flex h-dvh w-full max-w-93.75 flex-col bg-surface text-fg">
+      <div
+        id="figma-capture-root"
+        className={`relative flex w-full max-w-93.75 flex-col bg-surface text-fg ${full ? "min-h-dvh" : "h-dvh"}`}
+      >
         <StatusBar />
 
         {/* 스크롤 영역 */}
-        <ScrollArea className="flex flex-1 flex-col gap-6 overflow-y-auto px-6 pt-6 pb-7">
+        <ScrollArea className={`flex flex-1 flex-col gap-6 px-6 pt-6 pb-7 ${full ? "" : "overflow-y-auto"}`}>
           {/* 1. 영상 + 장면 고르기 */}
           <section className="flex flex-col gap-5">
             <h1 className="text-xl font-semibold tracking-tight">
@@ -155,24 +166,29 @@ function ScreenBody({ dataCase, open = "gaze", selected = {}, links = {}, autoNe
                 기억에 남는 순간이 있다면 남겨주세요
               </h2>
             </div>
-            <SceneComment label="가장 좋았던 장면" defaultValue={data.draft?.bestComment} />
-            <SceneComment label="가장 아쉬웠던 장면" defaultValue={data.draft?.worstComment} />
-            <div className="flex flex-col gap-2">
-              <p className="text-sm font-semibold tracking-tight">{interviewee.name}님에게 자유롭게 조언해주세요</p>
-              <textarea
-                placeholder="응원이나 조언을 자유롭게 적어주세요"
-                defaultValue={data.draft?.advice}
-                className="h-27 w-full resize-none rounded-lg bg-surface-subtle p-3 text-xs font-medium tracking-tight placeholder:text-fg-subtle"
-              />
+            {/* 문항 사이 20px (디자이너 요청 2026-11-12, Figma는 12px) */}
+            <div className="flex flex-col gap-5">
+              <SceneComment label="가장 좋았던 장면" kind="best" sections={sectionNames} defaultValue={data.draft?.bestComment} />
+              <SceneComment label="가장 아쉬웠던 장면" kind="worst" sections={sectionNames} defaultValue={data.draft?.worstComment} />
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-semibold tracking-tight">{interviewee.name}님에게 자유롭게 조언해주세요</p>
+                <AdviceInput defaultValue={data.draft?.advice} />
+              </div>
             </div>
           </section>
         </ScrollArea>
 
         {/* 하단 고정: 제출 */}
         <footer className="flex flex-col gap-3 px-6 pb-7">
-          <Button size="lg" className="w-full">
-            피드백 제출
-          </Button>
+          {submitHref ? (
+            <NavButton href={to(submitHref)!} resetScroll size="lg" className="w-full">
+              피드백 제출
+            </NavButton>
+          ) : (
+            <Button size="lg" className="w-full">
+              피드백 제출
+            </Button>
+          )}
           <p className="text-center text-xs tracking-tight text-fg-subtle">6개의 항목을 모두 선택하면 제출할 수 있어요</p>
         </footer>
 
@@ -245,28 +261,36 @@ function ChapterPicker({ data }: { data: FeedbackData }) {
   );
 }
 
-/** 장면 + 한 줄 코멘트 */
-function SceneComment({ label, defaultValue }: { label: string; defaultValue?: string }) {
+/**
+ * 구간 + 한 줄 코멘트
+ * 구간: 디자이너 요청(2026-11-12)으로 인상 항목(시선 ~ 말투 톤)을 고르는 셀렉트 박스.
+ *       디자인은 Figma "[모달] 선택"(1:1233) 기준, 항목만 장면 → 인상 항목으로 다름 — Figma 반영 필요
+ * 코멘트: 0/100 글자 수, 100자를 넘으면 빨간 경고
+ */
+function SceneComment({
+  label,
+  kind,
+  sections,
+  defaultValue,
+}: {
+  label: string;
+  /** 탭 임시 보관 이름: best = 좋았던 장면, worst = 아쉬웠던 장면 */
+  kind: "best" | "worst";
+  sections: string[];
+  defaultValue?: string;
+}) {
   return (
     <div className="flex flex-col gap-2">
       <p className="text-sm font-semibold tracking-tight">{label}</p>
-      <div className="flex w-full gap-2">
-        <button type="button" className="flex h-11 w-19 shrink-0 items-center gap-2 rounded-lg bg-surface-subtle p-3">
-          <span className="flex-1 text-left text-xs font-medium tracking-tight text-fg-subtle">구간</span>
-          <img src={`${ICON}/chevron-down.svg`} alt="" />
-        </button>
-        <input
-          placeholder="한 줄 코멘트를 남겨주세요"
-          defaultValue={defaultValue}
-          className="h-11 min-w-0 flex-1 rounded-lg bg-surface-subtle px-3 text-xs font-medium tracking-tight placeholder:text-fg-subtle"
-        />
-      </div>
+      <CommentRow field={`${kind}Comment`} defaultValue={defaultValue}>
+        <SectionSelect label={label} options={sections} field={`${kind}Section`} />
+      </CommentRow>
     </div>
   );
 }
 
 /** iPhone 상태바 (Figma iOS 키트) */
-function StatusBar() {
+export function StatusBar() {
   return (
     <div className="flex h-11 shrink-0 items-center bg-surface pt-5.5">
       <div className="flex flex-1 justify-center pr-1.5 pl-4 text-ios font-semibold">9:41</div>
@@ -281,7 +305,7 @@ function StatusBar() {
 }
 
 /** iPhone 홈 인디케이터 */
-function HomeIndicator() {
+export function HomeIndicator() {
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8.5">
       <div className="absolute bottom-2 left-1/2 h-1 w-36 -translate-x-1/2 rounded-full bg-primary" />
