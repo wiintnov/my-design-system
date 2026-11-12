@@ -49,12 +49,12 @@ export type FeedbackCase = (typeof FEEDBACK_CASES)[number];
 // 자세·손 움직임·목소리·말투 선택지는 페이지 구조(get_metadata) 글자에서 가져왔어요.
 // ⚠ 화면 파일들이 선택지 글자로 "고른 답"과 "링크"를 정해요. 고른 답 글자는 모든 케이스에서 같게 둬요.
 const impressions: Impression[] = [
-  { key: "gaze", title: "시선", question: "재원님은 눈을 잘 마주치나요?", options: ["잘 맞춰요", "대체로맞춰요", "가끔 피해요", "자주 피해요"] },
-  { key: "face", title: "표정", question: "재원님은 얼마나 밝고 자연스러운가요?", options: ["밝아요", "대체로밝아요", "가끔 굳어요", "자주 굳어요"] },
-  { key: "posture", title: "자세", question: "긴장감 없이 안정적인가요?", options: ["대체로 반듯", "가끔 구부정", "가끔 몸흔듦", "자주 몸흔듦"] },
-  { key: "hands", title: "손 움직임", question: "긴장감 없이 차분한가요?", options: ["차분해요", "가끔 만지작", "자주 만지작", "가만히못있음"] },
-  { key: "volume", title: "목소리 크기", question: "또렷하고 자신감있게 들리나요?", options: ["또렷해요", "대체로들려요", "가끔안들려요", "자주안들려요"] },
-  { key: "tone", title: "말투 톤", question: "생기가 있나요?", options: ["생동감있어요", "조금밋밋해요", "많이밋밋해요", "많이굳었어요"] },
+  { key: "gaze", title: "시선", question: "재원님은 눈을 잘 마주치나요?", options: ["잘 맞춰요", "대체로 맞춰요", "가끔 피해요", "자주 피해요"] },
+  { key: "face", title: "표정", question: "재원님은 얼마나 밝고 자연스러운가요?", options: ["밝아요", "대체로 밝아요", "가끔 굳어요", "자주 굳어요"] },
+  { key: "posture", title: "자세", question: "긴장감 없이 안정적인가요?", options: ["대체로 반듯해요", "가끔 구부정해요", "가끔 몸을 흔들어요", "자주 몸을 흔들어요"] },
+  { key: "hands", title: "손 움직임", question: "긴장감 없이 차분한가요?", options: ["차분해요", "가끔 만지작거려요", "자주 만지작거려요", "가만히 못 있어요"] },
+  { key: "volume", title: "목소리 크기", question: "또렷하고 자신감 있게 들리나요?", options: ["또렷해요", "대체로 들려요", "가끔 안 들려요", "자주 안 들려요"] },
+  { key: "tone", title: "말투 톤", question: "생기가 있나요?", options: ["생동감 있어요", "조금 밋밋해요", "많이 밋밋해요", "많이 굳었어요"] },
 ];
 
 const base: FeedbackData = {
@@ -89,14 +89,14 @@ const long: FeedbackData = {
   impressions: withName(longName, impressions).map((q) => {
     switch (q.key) {
       case "gaze":
-        // 고른 답(대체로맞춰요)은 그대로, 나머지 선택지 하나를 아주 길게
+        // 고른 답(대체로 맞춰요)은 그대로, 나머지 선택지 하나를 아주 길게
         return {
           ...q,
           question: `${longName}님은 질문을 듣고 답할 때 면접관의 눈을 자연스럽게 잘 마주치고, 생각할 때도 시선이 크게 흔들리지 않나요?`,
-          options: ["잘 맞춰요", "대체로맞춰요", "가끔 피해요", "면접관 눈을 거의 보지 않고 화면 아래만 봐요"],
+          options: ["잘 맞춰요", "대체로 맞춰요", "가끔 피해요", "면접관 눈을 거의 보지 않고 화면 아래만 봐요"],
         };
       case "hands":
-        return { ...q, options: ["차분해요", "펜을 계속 돌리거나 머리를 자주 만져요", "자주 만지작", "가만히못있음"] };
+        return { ...q, options: ["차분해요", "펜을 계속 돌리거나 머리를 자주 만져요", "자주 만지작거려요", "가만히 못 있어요"] };
       default:
         return q;
     }

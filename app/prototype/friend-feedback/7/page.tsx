@@ -11,8 +11,8 @@ export default function FriendFeedbackImpression6({ searchParams }: PageProps<"/
   return (
     <FeedbackScreen searchParams={searchParams}
       open="hands"
-      selected={{"gaze":"대체로맞춰요","face":"밝아요","posture":"자주 몸흔듦"}}
-      links={{"hands:가만히못있음":"/prototype/friend-feedback/8"}}
+      selected={{"gaze":"대체로 맞춰요","face":"밝아요","posture":"자주 몸을 흔들어요"}}
+      links={{"hands:가만히 못 있어요":"/prototype/friend-feedback/8"}}
     />
   );
 }
