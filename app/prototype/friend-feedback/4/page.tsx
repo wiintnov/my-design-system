@@ -11,7 +11,7 @@ export default function FriendFeedbackImpression3({ searchParams }: PageProps<"/
   return (
     <FeedbackScreen searchParams={searchParams}
       open="face"
-      selected={{ gaze: "대체로맞춰요", face: "밝아요" }}
+      selected={{ gaze: "대체로 맞춰요", face: "밝아요" }}
       links={{ posture: "/prototype/friend-feedback/5" }}
     />
   );

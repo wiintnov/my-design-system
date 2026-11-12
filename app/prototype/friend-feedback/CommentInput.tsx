@@ -30,7 +30,7 @@ export const COMMENT_MAX = 100;
  * 100자를 넘기면 보이는 경고 (문구·빨간색은 Figma에 없어서 임시로 정함 — 2026-11-12 디자이너 요청)
  * 빨간색은 키트 예시 토큰 danger(#f04452) — Figma에 경고 색이 생기면 바꿔요.
  */
-const OVER_MESSAGE = `${COMMENT_MAX}자 이내로 입력해 주세요`;
+const OVER_MESSAGE = `${COMMENT_MAX}자 이내로 적어 주세요`;
 
 function OverWarning() {
   return (
@@ -64,7 +64,7 @@ export function CommentRow({
           className={`flex h-11 min-w-0 flex-1 items-center gap-2 rounded-lg bg-surface-subtle px-3 ${over ? "ring-1 ring-danger" : ""}`}
         >
           <input
-            placeholder="한 줄 코멘트를 남겨주세요"
+            placeholder="한 줄 코멘트를 남겨 주세요"
             value={text}
             aria-invalid={over}
             onChange={(e) => setText(e.target.value)}
@@ -87,7 +87,7 @@ export function AdviceInput({ defaultValue }: { defaultValue?: string }) {
   return (
     <div className="flex flex-col gap-2">
       <textarea
-        placeholder="응원이나 조언을 자유롭게 적어주세요"
+        placeholder="응원이나 조언을 자유롭게 적어 주세요"
         value={text}
         aria-invalid={over}
         onChange={(e) => setText(e.target.value)}

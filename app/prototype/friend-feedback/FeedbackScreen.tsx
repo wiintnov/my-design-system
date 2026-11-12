@@ -22,7 +22,7 @@ type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
   /** 선택지가 펼쳐진 인상 항목 key. 나머지는 접혀 있고, 고른 답은 오른쪽 파란 태그로 보여요 */
   open?: string;
-  /** 인상 항목 key → 고른 선택지. 예: { gaze: "대체로맞춰요" } */
+  /** 인상 항목 key → 고른 선택지. 예: { gaze: "대체로 맞춰요" } */
   selected?: Record<string, string>;
   /**
    * 누르면 이동할 곳. Figma 프로토타입에 연결된 곳만 넣어요.
@@ -31,7 +31,7 @@ type Props = {
   links?: Record<string, string>;
   /** 화면이 열리고 잠시 뒤 자동으로 넘어갈 곳 (Figma "After delay") */
   autoNext?: string;
-  /** "피드백 제출"을 누르면 넘어갈 곳 (6개를 다 고른 화면에만) */
+  /** "피드백 보내기"을 누르면 넘어갈 곳 (6개를 다 고른 화면에만) */
   submitHref?: string;
 };
 
@@ -80,7 +80,7 @@ function ScreenBody({ dataCase, full, open = "gaze", selected = {}, links = {}, 
             <h1 className="text-xl font-semibold tracking-tight">
               {interviewee.name}님의 면접관이 되어
               <br />
-              피드백을 남겨주세요!
+              피드백을 남겨 주세요
             </h1>
             <div className="relative h-46 w-full rounded-lg bg-media">
               <img src={`${ICON}/play.svg`} alt="재생" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
@@ -163,7 +163,7 @@ function ScreenBody({ dataCase, full, open = "gaze", selected = {}, links = {}, 
               <h2 className="text-xl font-semibold tracking-tight">
                 {interviewee.name}님의 면접에서
                 <br />
-                기억에 남는 순간이 있다면 남겨주세요
+                기억에 남는 순간이 있다면 남겨 주세요
               </h2>
             </div>
             {/* 문항 사이 20px (디자이너 요청 2026-11-12, Figma는 12px) */}
@@ -171,7 +171,7 @@ function ScreenBody({ dataCase, full, open = "gaze", selected = {}, links = {}, 
               <SceneComment label="가장 좋았던 장면" kind="best" sections={sectionNames} defaultValue={data.draft?.bestComment} />
               <SceneComment label="가장 아쉬웠던 장면" kind="worst" sections={sectionNames} defaultValue={data.draft?.worstComment} />
               <div className="flex flex-col gap-2">
-                <p className="text-sm font-semibold tracking-tight">{interviewee.name}님에게 자유롭게 조언해주세요</p>
+                <p className="text-sm font-semibold tracking-tight">{interviewee.name}님에게 자유롭게 조언해 주세요</p>
                 <AdviceInput defaultValue={data.draft?.advice} />
               </div>
             </div>
@@ -182,14 +182,14 @@ function ScreenBody({ dataCase, full, open = "gaze", selected = {}, links = {}, 
         <footer className="flex flex-col gap-3 px-6 pb-7">
           {submitHref ? (
             <NavButton href={to(submitHref)!} resetScroll size="lg" className="w-full">
-              피드백 제출
+              피드백 보내기
             </NavButton>
           ) : (
             <Button size="lg" className="w-full">
-              피드백 제출
+              피드백 보내기
             </Button>
           )}
-          <p className="text-center text-xs tracking-tight text-fg-subtle">6개의 항목을 모두 선택하면 제출할 수 있어요</p>
+          <p className="text-center text-xs tracking-tight text-fg-subtle">6개 항목을 모두 고르면 보낼 수 있어요</p>
         </footer>
 
         <HomeIndicator />
@@ -202,7 +202,8 @@ function ScreenBody({ dataCase, full, open = "gaze", selected = {}, links = {}, 
 /** 인상 선택지 한 칸. 선택되면 연한 파랑 배경 + 파란 글자 */
 function Option({ label, selected, href }: { label: string; selected: boolean; href?: string }) {
   const className =
-    "flex min-w-0 flex-1 items-center justify-center rounded-lg p-3 text-2xs font-semibold tracking-tight whitespace-nowrap " +
+    // 긴 선택지("자주 몸을 흔들어요")는 단어 단위로 두 줄까지 (2026-11-12 문구 톤 반영)
+    "flex min-w-0 flex-1 items-center justify-center rounded-lg p-3 text-center text-2xs font-semibold tracking-tight break-keep " +
     (selected ? "bg-accent-subtle text-accent" : "bg-surface-subtle text-fg-subtle");
   if (href) {
     return (
