@@ -4,9 +4,9 @@ AI(Claude Code·Codex)가 단계를 마칠 때마다 체크해요. 직접 체크
 
 ## 목표 1 · 배포 링크에서 유저플로우 테스트하기
 
-- [ ] 1. 환경 확인 (node, git, gh 로그인, git 사용자 설정)
-- [ ] 2. 미리보기 띄우기 (localhost:3000/playground)
-- [ ] 3. Figma 연결 (Claude Code: /mcp › figma · Codex: codex mcp login figma)
+- [x] 1. 환경 확인 (node, git, gh 로그인, git 사용자 설정)
+- [x] 2. 미리보기 띄우기 (localhost:3000/playground)
+- [x] 3. Figma 연결 (Claude Code: /mcp › figma · Codex: codex mcp login figma)
 - [ ] 4. 토큰 가져오기 (figma-sync)
 - [ ] 5. 핵심 컴포넌트 만들기 (build-component · 버튼부터)
 - [ ] 6. 맞는지 검사 (grid-check → figma-reviewer)

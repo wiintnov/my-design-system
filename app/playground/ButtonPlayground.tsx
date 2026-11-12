@@ -79,9 +79,51 @@ export function ButtonPlayground() {
           </tbody>
         </table>
       </div>
+
+      {/* 3. 상태 고정 보기 — 마우스를 올리지 않아도 hover·pressed 모습을 나란히 */}
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-semibold">상태별 모습 (size: md)</p>
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-surface-subtle text-fg-subtle">
+              <tr>
+                <th className="p-3 font-semibold">variant \ state</th>
+                {STATES.map((s) => (
+                  <th key={s.key} className="p-3 font-semibold">
+                    {s.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {VARIANTS.map((v) => (
+                <tr key={v} className="border-t border-border">
+                  <td className="p-3 font-semibold">{v}</td>
+                  {STATES.map((s) => (
+                    <td key={s.key} className="p-3">
+                      <div data-force-state={s.force}>
+                        <Button variant={v} disabled={s.key === "disabled"}>
+                          버튼
+                        </Button>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
+
+const STATES = [
+  { key: "default", label: "기본", force: undefined },
+  { key: "hover", label: "hover (마우스 올림)", force: "hover" },
+  { key: "pressed", label: "pressed (누름)", force: "active" },
+  { key: "disabled", label: "disabled", force: undefined },
+] as const;
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
